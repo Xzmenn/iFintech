@@ -74,7 +74,7 @@ export function BudgetManager() {
     enabled: Boolean(selectedCategoryId),
     queryFn: () =>
       apiClient<BudgetHistoryPoint[]>(
-        `/api/budgets/history?categoryId=${selectedCategoryId}&year=${year}&month=${month}`,
+        `/api/budgets/history?categoryId=${selectedCategoryId}&year=${year}&month=${month}&months=6`,
       ),
   });
   const categories = categoriesQuery.data || [];
@@ -132,9 +132,15 @@ export function BudgetManager() {
 
   async function copyPrevious() {
     try {
+      const previous = new Date(year, month - 2, 1);
       const result = await apiClient<{ copied: number; skipped: number }>("/api/budgets/copy", {
         method: "POST",
-        body: JSON.stringify({ year, month }),
+        body: JSON.stringify({
+          fromYear: previous.getFullYear(),
+          fromMonth: previous.getMonth() + 1,
+          toYear: year,
+          toMonth: month,
+        }),
       });
       await client.invalidateQueries({ queryKey: ["budgets"] });
       toast.success(

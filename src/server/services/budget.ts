@@ -118,14 +118,19 @@ export async function deleteBudget(userId: string, id: string) {
   return { id };
 }
 
-export async function copyPreviousMonthBudgets(userId: string, year: number, month: number) {
-  const previous = new Date(year, month - 2, 1);
+export async function copyBudgets(
+  userId: string,
+  fromYear: number,
+  fromMonth: number,
+  toYear: number,
+  toMonth: number,
+) {
   const source = await db.budget.findMany({
-    where: { userId, year: previous.getFullYear(), month: previous.getMonth() + 1 },
+    where: { userId, year: fromYear, month: fromMonth },
   });
   if (!source.length) return { copied: 0, skipped: 0 };
   const existing = await db.budget.findMany({
-    where: { userId, year, month },
+    where: { userId, year: toYear, month: toMonth },
     select: { categoryId: true },
   });
   const existingCategories = new Set(existing.map((budget) => budget.categoryId));
@@ -135,8 +140,8 @@ export async function copyPreviousMonthBudgets(userId: string, year: number, mon
       data: candidates.map((budget) => ({
         userId,
         categoryId: budget.categoryId,
-        year,
-        month,
+        year: toYear,
+        month: toMonth,
         amount: budget.amount,
         alertThreshold: budget.alertThreshold,
         note: budget.note,
@@ -145,7 +150,12 @@ export async function copyPreviousMonthBudgets(userId: string, year: number, mon
     });
   }
   const created = await db.budget.count({
-    where: { userId, year, month, categoryId: { in: candidates.map((item) => item.categoryId) } },
+    where: {
+      userId,
+      year: toYear,
+      month: toMonth,
+      categoryId: { in: candidates.map((item) => item.categoryId) },
+    },
   });
   return { copied: created, skipped: source.length - created };
 }
@@ -155,11 +165,16 @@ export async function budgetHistory(
   categoryId: string,
   year: number,
   month: number,
+  months = 6,
 ) {
   await validateExpenseCategory(userId, categoryId);
-  const months = Array.from({ length: 6 }, (_, index) => new Date(year, month - 6 + index, 1));
+  const monthCount = Math.min(24, Math.max(1, months));
+  const historyMonths = Array.from(
+    { length: monthCount },
+    (_, index) => new Date(year, month - monthCount + index, 1),
+  );
   const rows = await Promise.all(
-    months.map(async (date) => {
+    historyMonths.map(async (date) => {
       const currentYear = date.getFullYear();
       const currentMonth = date.getMonth() + 1;
       const [budget, spent] = await Promise.all([
