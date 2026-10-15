@@ -5,12 +5,12 @@ describe("bucketCashflow", () => {
   it("groups daily transactions and calculates running net without transfers", () => {
     const result = bucketCashflow(
       [
-        { type: "INCOME", amount: 1000, date: "2026-01-01T12:00:00.000Z" },
-        { type: "EXPENSE", amount: 250, date: "2026-01-02T12:00:00.000Z" },
-        { type: "TRANSFER", amount: 500, date: "2026-01-02T12:00:00.000Z" },
+        { type: "INCOME", amount: 1000, date: new Date(2026, 0, 1, 12) },
+        { type: "EXPENSE", amount: 250, date: new Date(2026, 0, 2, 12) },
+        { type: "TRANSFER", amount: 500, date: new Date(2026, 0, 2, 12) },
       ],
-      "2026-01-01T00:00:00.000Z",
-      "2026-01-03T23:59:59.000Z",
+      new Date(2026, 0, 1),
+      new Date(2026, 0, 3, 23, 59, 59, 999),
     );
     expect(result.bucket).toBe("day");
     expect(result.items).toHaveLength(3);
