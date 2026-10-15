@@ -4,12 +4,12 @@ import { NextResponse, type NextRequest } from "next/server";
 import { logger } from "@/lib/logger";
 import { AppError } from "@/server/errors";
 
-type Handler = (request: NextRequest) => Promise<Response> | Response;
+type Handler<C> = (request: NextRequest, context: C) => Promise<Response> | Response;
 
-export function withApi(handler: Handler) {
-  return async (request: NextRequest) => {
+export function withApi<C = unknown>(handler: Handler<C>) {
+  return async (request: NextRequest, context: C) => {
     try {
-      return await handler(request);
+      return await handler(request, context);
     } catch (error) {
       if (error instanceof ZodError) {
         return NextResponse.json(

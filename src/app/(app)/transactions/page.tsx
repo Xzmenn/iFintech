@@ -1,6 +1,7 @@
-import { EmptyState } from "@/components/shared/empty-state";
-import { PageHeader } from "@/components/shared/page-header";
+import { Suspense } from "react";
+import { TransactionManager } from "@/components/finance/transaction-manager";
+import { LoadingState } from "@/components/shared/loading-state";
 
 export default function TransactionsPage() {
-  return <><PageHeader title="Transaksi" description="Catat dan tinjau seluruh pemasukan serta pengeluaran." /><EmptyState title="Belum ada transaksi" description="Transaksi yang Anda catat akan muncul di sini." /></>;
+  return <Suspense fallback={<LoadingState />}><TransactionManager /></Suspense>;
 }

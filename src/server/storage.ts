@@ -3,7 +3,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 export interface StorageDriver {
-  save(file: Buffer, fileName: string): Promise<string>;
+  save(file: Buffer, fileName: string, key?: string): Promise<string>;
   read(key: string): Promise<Buffer>;
   remove(key: string): Promise<void>;
 }
@@ -11,12 +11,13 @@ export interface StorageDriver {
 class LocalStorageDriver implements StorageDriver {
   private readonly directory = path.resolve(process.env.STORAGE_DIR || "./storage");
 
-  async save(file: Buffer, fileName: string) {
-    await mkdir(this.directory, { recursive: true });
+  async save(file: Buffer, fileName: string, key?: string) {
     const extension = path.extname(fileName).slice(0, 12);
-    const key = `${randomUUID()}${extension}`;
-    await writeFile(path.join(this.directory, key), file, { flag: "wx" });
-    return key;
+    const storageKey = key || `${randomUUID()}${extension}`;
+    const fullPath = this.resolveKey(storageKey);
+    await mkdir(path.dirname(fullPath), { recursive: true });
+    await writeFile(fullPath, file, { flag: "wx" });
+    return storageKey;
   }
 
   async read(key: string) {
@@ -28,10 +29,13 @@ class LocalStorageDriver implements StorageDriver {
   }
 
   private resolveKey(key: string) {
-    if (path.basename(key) !== key || key.includes("..")) {
+    const segments = key.split("/");
+    if (!key || key.includes("\\") || segments.some((segment) => !segment || segment === "." || segment === "..")) {
       throw new Error("Kunci penyimpanan tidak valid");
     }
-    return path.join(this.directory, key);
+    const resolved = path.resolve(this.directory, key);
+    if (!resolved.startsWith(`${this.directory}${path.sep}`)) throw new Error("Kunci penyimpanan tidak valid");
+    return resolved;
   }
 }
 

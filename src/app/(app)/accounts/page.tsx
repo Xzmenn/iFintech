@@ -1,6 +1,5 @@
-import { EmptyState } from "@/components/shared/empty-state";
-import { PageHeader } from "@/components/shared/page-header";
+import { AccountManager } from "@/components/finance/account-manager";
 
 export default function AccountsPage() {
-  return <><PageHeader title="Akun" description="Kelola rekening, dompet, dan kartu Anda." /><EmptyState title="Belum ada akun" description="Tambahkan akun untuk mulai melacak saldo." /></>;
+  return <AccountManager />;
 }

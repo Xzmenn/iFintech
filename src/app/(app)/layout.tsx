@@ -1,9 +1,13 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import Link from "next/link";
+import { Plus } from "lucide-react";
+import { RecurringRunner } from "@/components/layout/recurring-runner";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-muted/20">
+      <RecurringRunner />
       <Sidebar />
       <div className="lg:pl-64">
         <Topbar />
@@ -11,6 +15,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+      <Link href="/transactions?new=1" aria-label="Tambah transaksi"
+        className="fixed bottom-20 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg lg:bottom-8">
+        <Plus className="size-6" />
+      </Link>
     </div>
   );
 }
