@@ -7,12 +7,14 @@ import { z } from "zod";
 import { requireUser } from "@/server/auth";
 import { withApi } from "@/server/api-handler";
 import { db } from "@/server/db";
+import { createUserBackup } from "@/server/services/backup";
+import { AppError } from "@/server/errors";
 
 export const runtime = "nodejs";
 
 const querySchema = z.object({
-  format: z.enum(["csv", "xlsx", "pdf"]),
-  scope: z.enum(["transactions", "report"]).default("transactions"),
+  format: z.enum(["csv", "xlsx", "pdf", "json"]),
+  scope: z.enum(["transactions", "report", "all"]).default("transactions"),
   from: z.coerce.date().optional(),
   to: z.coerce.date().optional(),
   type: z.enum(["INCOME", "EXPENSE", "TRANSFER"]).optional(),
@@ -71,6 +73,21 @@ function csvRow(transaction: {
 export const GET = withApi(async (request: NextRequest) => {
   const user = await requireUser();
   const query = querySchema.parse(Object.fromEntries(request.nextUrl.searchParams));
+  if (query.format === "json") {
+    if (query.scope !== "all")
+      throw new AppError(400, "Format JSON hanya tersedia untuk seluruh data");
+    const backup = await createUserBackup(user.id);
+    return new NextResponse(JSON.stringify(backup, null, 2), {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Disposition": `attachment; filename="ifintech-backup-${new Date()
+          .toISOString()
+          .slice(0, 10)}.json"`,
+        "Cache-Control": "no-store",
+      },
+    });
+  }
+  if (query.scope === "all") throw new AppError(400, "Scope semua data hanya mendukung JSON");
   const from = query.from;
   const to = query.to;
   if (from && to && from > to) {
