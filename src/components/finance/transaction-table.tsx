@@ -2,7 +2,8 @@
 
 import { createColumnHelper, type ColumnDef, type SortingState } from "@tanstack/react-table";
 import { Paperclip, Pencil, Trash2 } from "lucide-react";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import type { FinanceTransaction } from "@/hooks/use-finance";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { DataTable } from "@/components/shared/data-table";
@@ -30,6 +31,7 @@ export function TransactionTable({
   onEdit: (transaction: FinanceTransaction) => void;
   onDelete: (id: string) => void;
 }) {
+  const formatCurrency = useCurrencyFormatter();
   const columns = [
     column.accessor("date", {
       header: "Tanggal",

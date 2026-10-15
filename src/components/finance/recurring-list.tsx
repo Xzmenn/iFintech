@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { useRecurring } from "@/hooks/use-finance";
 import { LoadingState } from "@/components/shared/loading-state";
 import { ErrorState } from "@/components/shared/error-state";
@@ -17,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function RecurringList() {
+  const formatCurrency = useCurrencyFormatter();
   const query = useRecurring();
   const client = useQueryClient();
   const [editing, setEditing] = useState<EditableRecurringRule | null>(null);

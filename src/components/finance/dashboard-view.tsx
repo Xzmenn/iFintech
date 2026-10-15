@@ -19,7 +19,8 @@ import {
 } from "recharts";
 import { useAccounts, useGoals } from "@/hooks/use-finance";
 import { useCashflowReport, useCategoryReport, useReportSummary } from "@/hooks/use-reports";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatCard } from "@/components/shared/stat-card";
 import { LoadingState } from "@/components/shared/loading-state";
@@ -36,6 +37,7 @@ function formatQueryDate(date: Date) {
 }
 
 export function DashboardView() {
+  const formatCurrency = useCurrencyFormatter();
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const sixMonthStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);

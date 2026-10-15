@@ -5,7 +5,7 @@ import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { apiClient, ApiError } from "@/lib/api-client";
-import { formatCurrency } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { transactionSchema } from "@/lib/validations/transaction";
 import { useAccounts, useCategories, type FinanceTransaction } from "@/hooks/use-finance";
 import { MoneyInput } from "@/components/shared/money-input";
@@ -50,6 +50,7 @@ export function TransactionFormDialog({
   preset: Preset;
   onSaved: () => Promise<void>;
 }) {
+  const formatCurrency = useCurrencyFormatter();
   const accountsQuery = useAccounts();
   const categoriesQuery = useCategories();
   const accounts = useMemo(

@@ -15,7 +15,7 @@ import {
 import { ChevronLeft, ChevronRight, Pencil, Plus, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { formatCurrency } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { useBudgets, useCategories, type Budget } from "@/hooks/use-finance";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -53,6 +53,7 @@ const statusColor = {
 const statusLabel = { aman: "Aman", peringatan: "Peringatan", melebihi: "Melebihi anggaran" };
 
 export function BudgetManager() {
+  const formatCurrency = useCurrencyFormatter();
   const [period, setPeriod] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);

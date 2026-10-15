@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/format";
+import { useSettings } from "@/hooks/use-settings";
 
 export function Money({
   amount,
-  currency = "IDR",
+  currency,
   colored = false,
   className,
 }: {
@@ -12,6 +13,7 @@ export function Money({
   colored?: boolean;
   className?: string;
 }) {
+  const settings = useSettings();
   const value = typeof amount === "object" ? amount.toNumber() : Number(amount);
   return (
     <span
@@ -21,7 +23,7 @@ export function Money({
         className,
       )}
     >
-      {formatCurrency(value, currency)}
+      {formatCurrency(value, currency || settings.currency, settings.locale)}
     </span>
   );
 }

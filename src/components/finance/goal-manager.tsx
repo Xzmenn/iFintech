@@ -5,7 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { useAccounts, useGoals, type Goal } from "@/hooks/use-finance";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -30,6 +31,7 @@ import { ColorPicker } from "@/components/shared/color-picker";
 import { IconPicker } from "@/components/shared/icon-picker";
 
 export function GoalManager() {
+  const formatCurrency = useCurrencyFormatter();
   const query = useGoals();
   const accountsQuery = useAccounts();
   const client = useQueryClient();

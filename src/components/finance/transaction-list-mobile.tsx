@@ -1,7 +1,8 @@
 "use client";
 
 import { Paperclip, Pencil, Trash2 } from "lucide-react";
-import { formatCurrency, formatDate } from "@/lib/format";
+import { formatDate } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import type { FinanceTransaction } from "@/hooks/use-finance";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ export function TransactionListMobile({
   onEdit: (transaction: FinanceTransaction) => void;
   onDelete: (id: string) => void;
 }) {
+  const formatCurrency = useCurrencyFormatter();
   return (
     <div className="space-y-3 md:hidden">
       {transactions.map((transaction) => (

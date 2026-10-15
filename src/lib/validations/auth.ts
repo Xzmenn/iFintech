@@ -28,7 +28,10 @@ export const resetPasswordSchema = z.object({
 export const profileSchema = z.object({
   name: registerSchema.shape.name,
   email: registerSchema.shape.email,
-  image: z.string().url().nullable().optional(),
+  image: z
+    .union([z.string().startsWith("/api/files/avatar/"), z.string().url()])
+    .nullable()
+    .optional(),
 });
 
 export const changePasswordSchema = z.object({

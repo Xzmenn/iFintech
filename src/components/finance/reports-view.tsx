@@ -24,7 +24,7 @@ import {
   useReportSummary,
 } from "@/hooks/use-reports";
 import { getPeriodRange, type PeriodPreset } from "@/lib/dates";
-import { formatCurrency } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { PageHeader } from "@/components/shared/page-header";
 import { PeriodFilter } from "@/components/shared/period-filter";
 import { StatCard } from "@/components/shared/stat-card";
@@ -70,6 +70,7 @@ function ExportButtons({ from, to }: { from: string; to: string }) {
 }
 
 export function ReportsView() {
+  const formatCurrency = useCurrencyFormatter();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

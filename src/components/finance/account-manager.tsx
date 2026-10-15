@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Archive, MoreVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
-import { formatCurrency } from "@/lib/format";
+import { useCurrencyFormatter } from "@/hooks/use-settings";
 import { useAccounts, type Account } from "@/hooks/use-finance";
 import { PageHeader } from "@/components/shared/page-header";
 import { LoadingState } from "@/components/shared/loading-state";
@@ -45,6 +45,7 @@ const kinds = [
 ] as const;
 
 export function AccountManager() {
+  const formatCurrency = useCurrencyFormatter();
   const query = useAccounts();
   const client = useQueryClient();
   const [editor, setEditor] = useState(false);
