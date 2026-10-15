@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ChevronLeft, ChevronRight, Pencil, Plus, Copy } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { useCurrencyFormatter } from "@/hooks/use-settings";
@@ -196,10 +196,15 @@ export function BudgetManager() {
           <ChevronRight className="size-4" />
         </Button>
       </div>
-      {query.isLoading ? (
+      {query.isLoading || categoriesQuery.isLoading ? (
         <LoadingState />
-      ) : query.isError ? (
-        <ErrorState onRetry={() => void query.refetch()} />
+      ) : query.isError || categoriesQuery.isError ? (
+        <ErrorState
+          onRetry={() => {
+            void query.refetch();
+            void categoriesQuery.refetch();
+          }}
+        />
       ) : (
         <>
           <div className="mb-5 grid gap-3 sm:grid-cols-3">
@@ -254,7 +259,7 @@ export function BudgetManager() {
                       />
                       {budget.category.name}
                     </CardTitle>
-                    <div className="flex gap-1">
+                    <div className="ml-auto flex shrink-0 gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -275,7 +280,7 @@ export function BudgetManager() {
                           void remove(budget);
                         }}
                       >
-                        <span className="text-destructive">×</span>
+                        <Trash2 className="text-destructive size-4" />
                       </Button>
                     </div>
                   </CardHeader>
@@ -308,17 +313,34 @@ export function BudgetManager() {
               </CardTitle>
             </CardHeader>
             <CardContent className="h-72">
-              {selectedCategoryId && history.data?.length ? (
+              {!selectedCategoryId ? (
+                <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
+                  Pilih kategori yang memiliki anggaran untuk melihat riwayat 6 bulan.
+                </div>
+              ) : history.isLoading ? (
+                <LoadingState rows={2} />
+              ) : history.isError ? (
+                <ErrorState onRetry={() => void history.refetch()} />
+              ) : history.data?.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={history.data}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="label" />
+                    <XAxis
+                      dataKey="label"
+                      interval={0}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 12 }}
+                    />
                     <YAxis
                       tickFormatter={(value: number) =>
                         new Intl.NumberFormat("id-ID", { notation: "compact" }).format(value)
                       }
                     />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Tooltip
+                      formatter={(value, name) => [formatCurrency(Number(value)), name]}
+                      labelFormatter={(label) => label}
+                    />
                     <Legend />
                     <Bar dataKey="budget" name="Anggaran" fill="#6366f1" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="spent" name="Terpakai" fill="#f59e0b" radius={[4, 4, 0, 0]} />
@@ -326,7 +348,7 @@ export function BudgetManager() {
                 </ResponsiveContainer>
               ) : (
                 <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
-                  Pilih kategori yang memiliki anggaran untuk melihat riwayat 6 bulan.
+                  Belum ada riwayat anggaran untuk kategori ini.
                 </div>
               )}
             </CardContent>

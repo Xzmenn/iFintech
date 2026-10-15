@@ -38,9 +38,14 @@ function formatQueryDate(date: Date) {
 
 export function DashboardView() {
   const formatCurrency = useCurrencyFormatter();
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  const sixMonthStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+  const { now, monthStart, sixMonthStart } = useMemo(() => {
+    const currentDate = new Date();
+    return {
+      now: currentDate,
+      monthStart: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1),
+      sixMonthStart: new Date(currentDate.getFullYear(), currentDate.getMonth() - 5, 1),
+    };
+  }, []);
   const summary = useReportSummary(formatQueryDate(monthStart), formatQueryDate(now));
   const cashflow = useCashflowReport(formatQueryDate(monthStart), formatQueryDate(now));
   const categories = useCategoryReport(
