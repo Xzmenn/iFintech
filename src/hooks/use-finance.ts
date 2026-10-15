@@ -37,6 +37,70 @@ export type FinanceTransaction = {
   attachments: { id: string; fileName: string }[];
 };
 
+export type Budget = {
+  id: string;
+  categoryId: string;
+  year: number;
+  month: number;
+  amount: number;
+  spent: number;
+  remaining: number;
+  percent: number;
+  status: "aman" | "peringatan" | "melebihi";
+  alertThreshold: number;
+  note: string | null;
+  category: Category;
+};
+
+export type Goal = {
+  id: string;
+  name: string;
+  targetAmount: number;
+  saved: number;
+  percent: number;
+  remaining: number;
+  monthlyAverage: number;
+  estimatedDate: string | null;
+  requiredPerMonth: number | null;
+  onTrack: boolean;
+  deadline: string | null;
+  accountId: string | null;
+  account: Account | null;
+  color: string;
+  icon: string;
+  note: string | null;
+  isCompleted: boolean;
+  contributions: {
+    id: string;
+    amount: number;
+    date: string;
+    note: string | null;
+  }[];
+};
+
+export type BudgetOverview = {
+  items: Budget[];
+  year: number;
+  month: number;
+  totalBudget: number;
+  totalSpent: number;
+  totalRemaining: number;
+};
+
+export function useBudgets(year: number, month: number) {
+  return useQuery({
+    queryKey: ["budgets", year, month],
+    queryFn: () => apiClient<BudgetOverview>(`/api/budgets?year=${year}&month=${month}`),
+  });
+}
+
+export function useGoals() {
+  return useQuery({
+    queryKey: ["goals"],
+    queryFn: () => apiClient<Goal[]>("/api/goals"),
+  });
+}
+
 export function useAccounts() {
   return useQuery({
     queryKey: ["accounts"],
