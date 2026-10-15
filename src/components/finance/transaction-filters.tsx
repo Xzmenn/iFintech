@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import type { PeriodPreset } from "@/lib/dates";
 import { getPeriodRange } from "@/lib/dates";
@@ -9,6 +9,7 @@ import { PeriodFilter } from "@/components/shared/period-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   Select,
@@ -76,20 +77,34 @@ export function TransactionFilters({
     });
   }
 
-  const filters = (
-    <>
+  function field(label: string, control: ReactNode, showLabel: boolean) {
+    return showLabel ? (
+      <div className="space-y-1">
+        <Label className="text-muted-foreground text-xs">{label}</Label>
+        {control}
+      </div>
+    ) : (
+      control
+    );
+  }
+
+  function renderFilters(showLabels = false) {
+    const periodFilter = (
       <PeriodFilter
         value={period}
         from={from}
         to={to}
         onChange={setPeriod}
         onRangeChange={setCustomRange}
+        triggerClassName={showLabels ? "w-full" : undefined}
       />
+    );
+    const typeFilter = (
       <Select
         value={params.get("type") || "all"}
         onValueChange={(value) => onChange("type", value === "all" ? "" : value)}
       >
-        <SelectTrigger>
+        <SelectTrigger className={showLabels ? "w-full" : undefined}>
           <SelectValue placeholder="Semua jenis" />
         </SelectTrigger>
         <SelectContent>
@@ -99,11 +114,13 @@ export function TransactionFilters({
           <SelectItem value="TRANSFER">Transfer</SelectItem>
         </SelectContent>
       </Select>
+    );
+    const accountFilter = (
       <Select
         value={params.get("accountId") || "all"}
         onValueChange={(value) => onChange("accountId", value === "all" ? "" : value)}
       >
-        <SelectTrigger>
+        <SelectTrigger className={showLabels ? "w-full" : undefined}>
           <SelectValue placeholder="Semua akun" />
         </SelectTrigger>
         <SelectContent>
@@ -115,11 +132,13 @@ export function TransactionFilters({
           ))}
         </SelectContent>
       </Select>
+    );
+    const categoryFilter = (
       <Select
         value={params.get("categoryId") || "all"}
         onValueChange={(value) => onChange("categoryId", value === "all" ? "" : value)}
       >
-        <SelectTrigger>
+        <SelectTrigger className={showLabels ? "w-full" : undefined}>
           <SelectValue placeholder="Semua kategori" />
         </SelectTrigger>
         <SelectContent>
@@ -146,24 +165,57 @@ export function TransactionFilters({
           )}
         </SelectContent>
       </Select>
+    );
+    const minAmount = (
       <Input
         type="number"
         min="0"
         value={params.get("minAmount") || ""}
         placeholder="Jumlah minimum"
         aria-label="Jumlah minimum"
+        className={showLabels ? "w-full" : undefined}
         onChange={(event) => onChange("minAmount", event.target.value)}
       />
+    );
+    const maxAmount = (
       <Input
         type="number"
         min="0"
         value={params.get("maxAmount") || ""}
         placeholder="Jumlah maksimum"
         aria-label="Jumlah maksimum"
+        className={showLabels ? "w-full" : undefined}
         onChange={(event) => onChange("maxAmount", event.target.value)}
       />
-    </>
-  );
+    );
+    const amounts = showLabels ? (
+      <div className="space-y-1">
+        <Label className="text-muted-foreground text-xs">Jumlah</Label>
+        <div className="grid gap-2">
+          {minAmount}
+          {maxAmount}
+        </div>
+      </div>
+    ) : (
+      <>
+        {minAmount}
+        {maxAmount}
+      </>
+    );
+
+    return (
+      <>
+        {field("Periode", periodFilter, showLabels)}
+        {field("Jenis", typeFilter, showLabels)}
+        {field("Akun", accountFilter, showLabels)}
+        {field("Kategori", categoryFilter, showLabels)}
+        {amounts}
+      </>
+    );
+  }
+
+  const filters = renderFilters();
+  const mobileFilters = renderFilters(true);
 
   return (
     <div className="space-y-3">
@@ -199,22 +251,23 @@ export function TransactionFilters({
               )}
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[min(92vw,420px)] overflow-y-auto">
+          <SheetContent side="right" className="!w-[min(92vw,420px)]">
             <SheetHeader>
               <SheetTitle>Filter transaksi</SheetTitle>
             </SheetHeader>
-            <div className="space-y-4 px-4 pb-6">
-              <div className="grid gap-3">{filters}</div>
+            <div className="min-h-0 flex-1 overflow-y-auto px-4">
+              <div className="grid gap-4 pb-4">{mobileFilters}</div>
+            </div>
+            <div className="mt-auto grid grid-cols-2 gap-2 border-t p-4">
               <Button
                 variant="outline"
-                className="w-full"
                 onClick={() => {
                   onReset();
-                  setFiltersOpen(false);
                 }}
               >
                 Reset filter
               </Button>
+              <Button onClick={() => setFiltersOpen(false)}>Terapkan</Button>
             </div>
           </SheetContent>
         </Sheet>

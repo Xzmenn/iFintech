@@ -36,6 +36,10 @@ function formatQueryDate(date: Date) {
   return date.toISOString();
 }
 
+function cashflowTick(value: string) {
+  return value.match(/^(\d+)\s/)?.[1] ?? value;
+}
+
 export function DashboardView() {
   const formatCurrency = useCurrencyFormatter();
   const { now, monthStart, sixMonthStart } = useMemo(() => {
@@ -170,13 +174,23 @@ export function DashboardView() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="label" tickLine={false} axisLine={false} />
+                    <XAxis
+                      dataKey="label"
+                      tickFormatter={cashflowTick}
+                      interval="preserveStartEnd"
+                      minTickGap={24}
+                      tickLine={false}
+                      axisLine={false}
+                    />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
                       tickFormatter={(value) => `${Math.round(Number(value) / 1000000)} jt`}
                     />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <Tooltip
+                      formatter={(value) => formatCurrency(Number(value))}
+                      labelFormatter={(label) => label}
+                    />
                     <Area
                       type="monotone"
                       dataKey="income"

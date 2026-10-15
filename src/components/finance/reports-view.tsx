@@ -49,6 +49,10 @@ function toDateInput(date: Date) {
   ).padStart(2, "0")}`;
 }
 
+function cashflowTick(value: string) {
+  return value.match(/^(\d+)\s/)?.[1] ?? value;
+}
+
 function ExportButtons({ from, to }: { from: string; to: string }) {
   function download(format: "csv" | "xlsx" | "pdf") {
     const params = new URLSearchParams({ format, scope: "report", from, to });
@@ -199,11 +203,21 @@ export function ReportsView() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={cashflow.data?.items || []}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="label" tickLine={false} axisLine={false} />
+                      <XAxis
+                        dataKey="label"
+                        tickFormatter={cashflowTick}
+                        interval="preserveStartEnd"
+                        minTickGap={24}
+                        tickLine={false}
+                        axisLine={false}
+                      />
                       <YAxis
                         tickFormatter={(value) => `${Math.round(Number(value) / 1000000)} jt`}
                       />
-                      <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                      <Tooltip
+                        formatter={(value) => formatCurrency(Number(value))}
+                        labelFormatter={(label) => label}
+                      />
                       <Line dataKey="income" name="Pemasukan" stroke="#14b8a6" />
                       <Line dataKey="expense" name="Pengeluaran" stroke="#f43f5e" />
                       <Line dataKey="runningNet" name="Saldo berjalan" stroke="#3b82f6" />

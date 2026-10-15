@@ -25,7 +25,7 @@ import { MoneyInput } from "@/components/shared/money-input";
 import { CategoryIcon } from "@/components/shared/category-icon";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -250,16 +250,16 @@ export function BudgetManager() {
                   className={`cursor-pointer transition hover:shadow-md ${selectedCategoryId === budget.categoryId ? "ring-primary ring-2" : ""}`}
                   onClick={() => setSelectedCategoryId(budget.categoryId)}
                 >
-                  <CardHeader className="flex-row items-start justify-between gap-3 pb-2">
+                  <CardHeader className="items-center gap-3 pb-2">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <CategoryIcon
                         name={budget.category.icon}
                         color={budget.category.color}
                         className="size-8"
                       />
-                      {budget.category.name}
+                      <span className="truncate">{budget.category.name}</span>
                     </CardTitle>
-                    <div className="ml-auto flex shrink-0 gap-1">
+                    <CardAction className="row-start-1 flex items-center gap-1">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -282,7 +282,7 @@ export function BudgetManager() {
                       >
                         <Trash2 className="text-destructive size-4" />
                       </Button>
-                    </div>
+                    </CardAction>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-2 flex justify-between gap-3 text-sm">

@@ -18,19 +18,21 @@ export function PeriodFilter({
   from,
   to,
   onRangeChange,
+  triggerClassName = "w-44",
 }: {
   value: PeriodPreset;
   onChange: (value: PeriodPreset) => void;
   from?: string;
   to?: string;
   onRangeChange?: (range: { from: string; to: string }) => void;
+  triggerClassName?: string;
 }) {
   return (
     <div className="flex flex-wrap items-end gap-3">
-      <div className="space-y-1">
+      <div className={`space-y-1 ${triggerClassName === "w-full" ? "w-full" : ""}`}>
         <Label className="sr-only">Periode</Label>
         <Select value={value} onValueChange={(next) => onChange(next as PeriodPreset)}>
-          <SelectTrigger className="w-44">
+          <SelectTrigger className={triggerClassName}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
