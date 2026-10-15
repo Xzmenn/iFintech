@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -23,17 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
-type FormValues = {
-  type: "EXPENSE" | "INCOME" | "TRANSFER";
-  amount: number;
-  date: Date;
-  accountId: string;
-  toAccountId?: string | null;
-  categoryId?: string | null;
-  subCategoryId?: string | null;
-  note?: string | null;
-  tags?: string[];
-};
+type FormValues = z.output<typeof transactionSchema>;
 
 type Preset = { type?: FormValues["type"]; accountId?: string };
 
@@ -57,8 +48,8 @@ export function TransactionFormDialog({
     () => (accountsQuery.data?.items || []).filter((account) => !account.isArchived),
     [accountsQuery.data],
   );
-  const form = useForm<FormValues>({
-    resolver: zodResolver(transactionSchema) as Resolver<FormValues>,
+  const form = useForm<FormValues, unknown, FormValues>({
+    resolver: zodResolver(transactionSchema) as Resolver<FormValues, unknown, FormValues>,
     defaultValues: {
       type: "EXPENSE",
       amount: 0,
@@ -193,7 +184,10 @@ export function TransactionFormDialog({
         <DialogHeader>
           <DialogTitle>{transaction ? "Ubah Transaksi" : "Tambah Transaksi"}</DialogTitle>
         </DialogHeader>
-        <form className="space-y-4" onSubmit={form.handleSubmit(save)}>
+        <form
+          className="space-y-4"
+          onSubmit={form.handleSubmit(save, () => toast.error("Periksa kembali isian formulir"))}
+        >
           <div className="grid grid-cols-3 gap-1">
             {[
               ["EXPENSE", "Pengeluaran"],
@@ -226,9 +220,7 @@ export function TransactionFormDialog({
                 <MoneyInput value={field.value} onChange={field.onChange} id="transaction-amount" />
               )}
             />
-            {form.formState.errors.amount && (
-              <p className="text-destructive text-xs">{form.formState.errors.amount.message}</p>
-            )}
+            <FieldError message={form.formState.errors.amount?.message} />
           </div>
 
           <div className="space-y-1">
@@ -240,12 +232,22 @@ export function TransactionFormDialog({
                 <Input
                   id="transaction-date"
                   type="date"
-                  required
-                  value={field.value.toISOString().slice(0, 10)}
-                  onChange={(event) => field.onChange(new Date(`${event.target.value}T12:00:00`))}
+                  value={
+                    Number.isNaN(field.value.getTime())
+                      ? ""
+                      : field.value.toISOString().slice(0, 10)
+                  }
+                  onChange={(event) =>
+                    field.onChange(
+                      event.target.value
+                        ? new Date(`${event.target.value}T12:00:00`)
+                        : new Date(""),
+                    )
+                  }
                 />
               )}
             />
+            <FieldError message={form.formState.errors.date?.message} />
           </div>
 
           <div className="space-y-1">
@@ -272,6 +274,7 @@ export function TransactionFormDialog({
                 </Select>
               )}
             />
+            <FieldError message={form.formState.errors.accountId?.message} />
           </div>
 
           {type === "TRANSFER" ? (
@@ -301,6 +304,7 @@ export function TransactionFormDialog({
                   </Select>
                 )}
               />
+              <FieldError message={form.formState.errors.toAccountId?.message} />
             </div>
           ) : (
             <>
@@ -331,6 +335,7 @@ export function TransactionFormDialog({
                     </Select>
                   )}
                 />
+                <FieldError message={form.formState.errors.categoryId?.message} />
               </div>
               {!!selectedCategory?.subCategories.length && (
                 <div className="space-y-1">
@@ -357,6 +362,7 @@ export function TransactionFormDialog({
                       </Select>
                     )}
                   />
+                  <FieldError message={form.formState.errors.subCategoryId?.message} />
                 </div>
               )}
             </>
@@ -365,6 +371,7 @@ export function TransactionFormDialog({
           <div className="space-y-1">
             <Label htmlFor="transaction-note">Catatan</Label>
             <Input id="transaction-note" placeholder="Catatan" {...form.register("note")} />
+            <FieldError message={form.formState.errors.note?.message} />
           </div>
           <div className="space-y-1">
             <Label>Tag</Label>
@@ -453,4 +460,8 @@ export function TransactionFormDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+function FieldError({ message }: { message?: string }) {
+  return message ? <p className="text-destructive text-xs">{message}</p> : null;
 }

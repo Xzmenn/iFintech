@@ -35,3 +35,26 @@ export function getPeriodRange(
       return { from: startOfMonth(now), to: endOfMonth(now) };
   }
 }
+
+export function withTransactionDateRange(params: URLSearchParams, now = new Date()) {
+  const query = new URLSearchParams(params);
+  if (query.has("from") || query.has("to")) return query;
+
+  const value = query.get("period");
+  const preset: PeriodPreset | null =
+    value === null
+      ? "month"
+      : value === "today" ||
+          value === "week" ||
+          value === "month" ||
+          value === "year" ||
+          value === "custom"
+        ? value
+        : null;
+  if (!preset || preset === "custom") return query;
+
+  const range = getPeriodRange(preset, now);
+  query.set("from", range.from.toISOString());
+  query.set("to", range.to.toISOString());
+  return query;
+}

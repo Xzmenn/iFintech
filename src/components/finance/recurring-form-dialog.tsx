@@ -51,8 +51,12 @@ export function RecurringFormDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const client = useQueryClient();
-  const form = useForm<RecurringEditValues>({
-    resolver: zodResolver(recurringEditSchema) as Resolver<RecurringEditValues>,
+  const form = useForm<RecurringEditValues, unknown, RecurringEditValues>({
+    resolver: zodResolver(recurringEditSchema) as Resolver<
+      RecurringEditValues,
+      unknown,
+      RecurringEditValues
+    >,
     defaultValues: {
       amount: 0,
       frequency: "MONTHLY",
@@ -99,7 +103,10 @@ export function RecurringFormDialog({
         <DialogHeader>
           <DialogTitle>Ubah Transaksi Berulang</DialogTitle>
         </DialogHeader>
-        <form className="space-y-4" onSubmit={form.handleSubmit(save)}>
+        <form
+          className="space-y-4"
+          onSubmit={form.handleSubmit(save, () => toast.error("Periksa kembali isian formulir"))}
+        >
           <div className="space-y-1">
             <Label htmlFor="recurring-amount">Jumlah</Label>
             <Input
@@ -109,9 +116,7 @@ export function RecurringFormDialog({
               step="any"
               {...form.register("amount", { valueAsNumber: true })}
             />
-            {form.formState.errors.amount && (
-              <p className="text-destructive text-xs">{form.formState.errors.amount.message}</p>
-            )}
+            <FieldError message={form.formState.errors.amount?.message} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
@@ -133,6 +138,7 @@ export function RecurringFormDialog({
                   </Select>
                 )}
               />
+              <FieldError message={form.formState.errors.frequency?.message} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="recurring-interval">Interval</Label>
@@ -143,15 +149,18 @@ export function RecurringFormDialog({
                 max={365}
                 {...form.register("interval", { valueAsNumber: true })}
               />
+              <FieldError message={form.formState.errors.interval?.message} />
             </div>
           </div>
           <div className="space-y-1">
             <Label htmlFor="recurring-end-date">Tanggal akhir (opsional)</Label>
             <Input id="recurring-end-date" type="date" {...form.register("endDate")} />
+            <FieldError message={form.formState.errors.endDate?.message} />
           </div>
           <div className="space-y-1">
             <Label htmlFor="recurring-note">Catatan</Label>
             <Input id="recurring-note" {...form.register("note")} />
+            <FieldError message={form.formState.errors.note?.message} />
           </div>
           <Controller
             control={form.control}
@@ -170,4 +179,8 @@ export function RecurringFormDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+function FieldError({ message }: { message?: string }) {
+  return message ? <p className="text-destructive text-xs">{message}</p> : null;
 }
