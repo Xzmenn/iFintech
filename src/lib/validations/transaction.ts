@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalId } from "@/lib/validations/helpers";
 
 export const transactionTypeSchema = z.enum(["INCOME", "EXPENSE", "TRANSFER"]);
 
@@ -7,9 +8,9 @@ const transactionFields = z.object({
   amount: z.number().positive("Jumlah harus lebih dari nol").max(1e13),
   date: z.coerce.date(),
   accountId: z.string().min(1, "Akun wajib dipilih"),
-  toAccountId: z.string().min(1).optional().nullable(),
-  categoryId: z.string().min(1).optional().nullable(),
-  subCategoryId: z.string().min(1).optional().nullable(),
+  toAccountId: optionalId,
+  categoryId: optionalId,
+  subCategoryId: optionalId,
   note: z.string().trim().max(1000).optional().nullable(),
   tags: z.array(z.string().trim().min(1).max(40)).max(30).optional(),
 });

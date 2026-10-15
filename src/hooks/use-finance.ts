@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import { withTransactionDateRange } from "@/lib/dates";
 
 export type Account = {
   id: string;
@@ -117,7 +118,7 @@ export function useCategories(type?: string) {
 }
 
 export function useTransactions(params: URLSearchParams) {
-  const query = params.toString();
+  const query = withTransactionDateRange(params).toString();
   return useQuery({
     queryKey: ["transactions", query],
     queryFn: () =>
