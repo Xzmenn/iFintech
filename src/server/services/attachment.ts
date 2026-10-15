@@ -5,20 +5,37 @@ import { notFound } from "@/server/errors";
 import { db } from "@/server/db";
 import { storage } from "@/server/storage";
 
-export async function createAttachment(userId: string, transactionId: string, file: {
-  buffer: Buffer; name: string; type: string;
-}) {
-  const transaction = await db.transaction.findFirst({ where: { id: transactionId, userId }, select: { id: true } });
+export async function createAttachment(
+  userId: string,
+  transactionId: string,
+  file: {
+    buffer: Buffer;
+    name: string;
+    type: string;
+  },
+) {
+  const transaction = await db.transaction.findFirst({
+    where: { id: transactionId, userId },
+    select: { id: true },
+  });
   if (!transaction) throw notFound("Transaksi tidak ditemukan");
-  const safeName = path.basename(file.name).replace(/[^\p{L}\p{N}._-]/gu, "_").slice(0, 120) || "lampiran";
+  const safeName =
+    path
+      .basename(file.name)
+      .replace(/[^\p{L}\p{N}._-]/gu, "_")
+      .slice(0, 120) || "lampiran";
   const cuid = `c${Date.now().toString(36)}${randomBytes(8).toString("hex")}`;
   const key = `attachments/${userId}/${cuid}-${safeName}`;
   const storageKey = await storage.save(file.buffer, safeName, key);
   try {
     const attachment = await db.attachment.create({
       data: {
-        userId, transactionId, fileName: safeName, mimeType: file.type,
-        size: file.buffer.byteLength, storageKey,
+        userId,
+        transactionId,
+        fileName: safeName,
+        mimeType: file.type,
+        size: file.buffer.byteLength,
+        storageKey,
       },
     });
     return serialize(attachment);

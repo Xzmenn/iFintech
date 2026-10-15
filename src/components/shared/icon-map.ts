@@ -7,18 +7,24 @@ import {
   ChartNoAxesCombined,
   ChartPie,
   CircleEllipsis,
-  CircleHelp,
+  Circle,
   Clapperboard,
   Coffee,
+  CreditCard,
   Gift,
   HandHeart,
   HeartPulse,
   House,
   Laptop,
+  Landmark,
   Plane,
   Receipt,
+  ShieldCheck,
   ShoppingBag,
+  Smartphone,
   Tag,
+  Target,
+  TrendingUp,
   Utensils,
   Wallet,
   GraduationCap,
@@ -47,10 +53,17 @@ export const CATEGORY_ICONS = {
   "badge-percent": BadgePercent,
   "chart-no-axes-combined": ChartNoAxesCombined,
   "arrow-left-right": ArrowLeftRight,
+  "credit-card": CreditCard,
+  landmark: Landmark,
+  smartphone: Smartphone,
+  "trending-up": TrendingUp,
+  "shield-check": ShieldCheck,
+  target: Target,
+  circle: Circle,
 } as const;
 
 export type CategoryIconName = keyof typeof CATEGORY_ICONS;
 
 export function getCategoryIcon(name?: string) {
-  return CATEGORY_ICONS[name as CategoryIconName] || CircleHelp;
+  return CATEGORY_ICONS[name as CategoryIconName] || Wallet;
 }

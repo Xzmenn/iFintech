@@ -30,11 +30,16 @@ class LocalStorageDriver implements StorageDriver {
 
   private resolveKey(key: string) {
     const segments = key.split("/");
-    if (!key || key.includes("\\") || segments.some((segment) => !segment || segment === "." || segment === "..")) {
+    if (
+      !key ||
+      key.includes("\\") ||
+      segments.some((segment) => !segment || segment === "." || segment === "..")
+    ) {
       throw new Error("Kunci penyimpanan tidak valid");
     }
     const resolved = path.resolve(this.directory, key);
-    if (!resolved.startsWith(`${this.directory}${path.sep}`)) throw new Error("Kunci penyimpanan tidak valid");
+    if (!resolved.startsWith(`${this.directory}${path.sep}`))
+      throw new Error("Kunci penyimpanan tidak valid");
     return resolved;
   }
 }

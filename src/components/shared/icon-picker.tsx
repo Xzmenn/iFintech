@@ -16,7 +16,15 @@ export function IconPicker({
   return (
     <div className="grid grid-cols-6 gap-2">
       {Object.entries(CATEGORY_ICONS).map(([name, Icon]) => (
-        <Button key={name} type="button" aria-label={name} variant="outline" size="icon" className={cn(value === name && "border-primary bg-primary/10 text-primary")} onClick={() => onChange(name as CategoryIconName)}>
+        <Button
+          key={name}
+          type="button"
+          aria-label={name}
+          variant="outline"
+          size="icon"
+          className={cn(value === name && "border-primary bg-primary/10 text-primary")}
+          onClick={() => onChange(name as CategoryIconName)}
+        >
           <Icon className="size-4" />
         </Button>
       ))}

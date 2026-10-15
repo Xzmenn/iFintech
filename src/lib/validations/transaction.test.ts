@@ -11,8 +11,12 @@ const transfer = {
 
 describe("transactionSchema", () => {
   it("requires a different destination account for transfers", () => {
-    expect(transactionSchema.safeParse({ ...transfer, toAccountId: undefined }).success).toBe(false);
-    expect(transactionSchema.safeParse({ ...transfer, toAccountId: "account-a" }).success).toBe(false);
+    expect(transactionSchema.safeParse({ ...transfer, toAccountId: undefined }).success).toBe(
+      false,
+    );
+    expect(transactionSchema.safeParse({ ...transfer, toAccountId: "account-a" }).success).toBe(
+      false,
+    );
     expect(transactionSchema.safeParse(transfer).success).toBe(true);
   });
 

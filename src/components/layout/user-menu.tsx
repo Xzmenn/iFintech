@@ -31,14 +31,18 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="truncate font-normal">
           <span className="block font-medium">{name}</span>
-          <span className="text-xs text-muted-foreground">{data?.user?.email}</span>
+          <span className="text-muted-foreground text-xs">{data?.user?.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/settings?tab=profil"><UserRound className="mr-2 size-4" /> Profil</Link>
+          <Link href="/settings?tab=profil">
+            <UserRound className="mr-2 size-4" /> Profil
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/settings"><Settings className="mr-2 size-4" /> Pengaturan</Link>
+          <Link href="/settings">
+            <Settings className="mr-2 size-4" /> Pengaturan
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => void signOut({ callbackUrl: "/login" })}>

@@ -8,6 +8,11 @@ type Context = { params: Promise<{ id: string }> };
 
 export const POST = withApi<Context>(async (request: NextRequest, { params }) => {
   const user = await requireUser();
-  const { name } = subCategorySchema.parse({ ...(await request.json()), categoryId: (await params).id });
-  return NextResponse.json(await createSubCategory(user.id, (await params).id, name), { status: 201 });
+  const { name } = subCategorySchema.parse({
+    ...(await request.json()),
+    categoryId: (await params).id,
+  });
+  return NextResponse.json(await createSubCategory(user.id, (await params).id, name), {
+    status: 201,
+  });
 });

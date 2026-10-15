@@ -33,11 +33,13 @@ export async function recalculateBalances(
   for (const account of accounts) {
     const balance = balances.get(account.id) || 0;
     const minimum =
-      account.type === "CREDIT_CARD" && account.creditLimit
-        ? -Number(account.creditLimit)
-        : 0;
+      account.type === "CREDIT_CARD" && account.creditLimit ? -Number(account.creditLimit) : 0;
     if (balance < minimum) {
-      throw new AppError(422, `Saldo akun "${account.name}" tidak mencukupi`, "INSUFFICIENT_BALANCE");
+      throw new AppError(
+        422,
+        `Saldo akun "${account.name}" tidak mencukupi`,
+        "INSUFFICIENT_BALANCE",
+      );
     }
     await tx.account.update({
       where: { id: account.id },

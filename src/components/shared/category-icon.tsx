@@ -11,7 +11,10 @@ export function CategoryIcon({
 }) {
   const Icon = getCategoryIcon(name);
   return (
-    <span className={`inline-flex size-9 items-center justify-center rounded-xl ${className || ""}`} style={{ color, backgroundColor: `${color}18` }}>
+    <span
+      className={`inline-flex size-9 items-center justify-center rounded-xl ${className || ""}`}
+      style={{ color, backgroundColor: `${color}18` }}
+    >
       <Icon className="size-4" />
     </span>
   );

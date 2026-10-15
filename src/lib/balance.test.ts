@@ -15,7 +15,9 @@ describe("transactionEffects", () => {
   });
 
   it("moves transfer amounts between accounts", () => {
-    expect(transactionEffects({ type: "TRANSFER", amount: 75, accountId: "a", toAccountId: "b" })).toEqual([
+    expect(
+      transactionEffects({ type: "TRANSFER", amount: 75, accountId: "a", toAccountId: "b" }),
+    ).toEqual([
       { accountId: "a", delta: -75 },
       { accountId: "b", delta: 75 },
     ]);

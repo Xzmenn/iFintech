@@ -28,10 +28,7 @@ export function withApi<C = unknown>(handler: Handler<C>) {
       }
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
-          return NextResponse.json(
-            { error: "Data sudah terdaftar" },
-            { status: 409 },
-          );
+          return NextResponse.json({ error: "Data sudah terdaftar" }, { status: 409 });
         }
         if (error.code === "P2025") {
           return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });

@@ -14,7 +14,13 @@ export function Money({
 }) {
   const value = typeof amount === "object" ? amount.toNumber() : Number(amount);
   return (
-    <span className={cn(colored && value > 0 && "text-emerald-600", colored && value < 0 && "text-rose-600", className)}>
+    <span
+      className={cn(
+        colored && value > 0 && "text-emerald-600",
+        colored && value < 0 && "text-rose-600",
+        className,
+      )}
+    >
       {formatCurrency(value, currency)}
     </span>
   );

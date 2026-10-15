@@ -2,11 +2,7 @@ import { addDays, addMonths, addWeeks, addYears } from "date-fns";
 
 export type RecurringFrequency = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
 
-export function getNextRunDate(
-  date: Date,
-  frequency: RecurringFrequency,
-  interval: number,
-) {
+export function getNextRunDate(date: Date, frequency: RecurringFrequency, interval: number) {
   const steps = Math.max(1, Math.floor(interval));
   switch (frequency) {
     case "DAILY":

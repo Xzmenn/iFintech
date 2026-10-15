@@ -11,12 +11,12 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed bg-card/70 px-6 py-12 text-center">
-      <span className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+    <div className="bg-card/70 flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-12 text-center">
+      <span className="bg-primary/10 text-primary mb-4 flex size-12 items-center justify-center rounded-2xl">
         <Inbox className="size-5" />
       </span>
       <h2 className="font-semibold">{title}</h2>
-      <p className="mt-1 max-w-sm text-sm text-muted-foreground">{description}</p>
+      <p className="text-muted-foreground mt-1 max-w-sm text-sm">{description}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>
   );

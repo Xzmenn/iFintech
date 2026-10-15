@@ -71,24 +71,30 @@ export function DataTable<TData, TValue>({
   });
   const count = total ?? table.getFilteredRowModel().rows.length;
   return (
-    <div className="overflow-hidden rounded-xl border bg-card">
+    <div className="bg-card overflow-hidden rounded-xl border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((group) => (
             <TableRow key={group.id}>
               {group.headers.map((header) => (
                 <TableHead key={header.id}>
-                  {header.isPlaceholder ? null : (
+                  {header.isPlaceholder ? null : header.column.getCanSort() ? (
                     <Button
                       variant="ghost"
                       className="-ml-3 h-8 px-3 font-medium"
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getIsSorted() === "asc" ? <ArrowUp className="ml-2 size-3.5" /> :
-                        header.column.getIsSorted() === "desc" ? <ArrowDown className="ml-2 size-3.5" /> :
-                          <ChevronsUpDown className="ml-2 size-3.5 text-muted-foreground" />}
+                      {header.column.getIsSorted() === "asc" ? (
+                        <ArrowUp className="ml-2 size-3.5" />
+                      ) : header.column.getIsSorted() === "desc" ? (
+                        <ArrowDown className="ml-2 size-3.5" />
+                      ) : (
+                        <ChevronsUpDown className="text-muted-foreground ml-2 size-3.5" />
+                      )}
                     </Button>
+                  ) : (
+                    flexRender(header.column.columnDef.header, header.getContext())
                   )}
                 </TableHead>
               ))}
@@ -100,21 +106,46 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
             ))
           ) : (
-            <TableRow><TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">Tidak ada data.</TableCell></TableRow>
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="text-muted-foreground h-24 text-center"
+              >
+                Tidak ada data.
+              </TableCell>
+            </TableRow>
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-between border-t px-4 py-3 text-sm text-muted-foreground">
+      <div className="text-muted-foreground flex items-center justify-between border-t px-4 py-3 text-sm">
         <span>{count.toLocaleString("id-ID")} data</span>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>Sebelumnya</Button>
-          <span>{page + 1} / {Math.max(1, table.getPageCount())}</span>
-          <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>Berikutnya</Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Sebelumnya
+          </Button>
+          <span>
+            {page + 1} / {Math.max(1, table.getPageCount())}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Berikutnya
+          </Button>
         </div>
       </div>
     </div>

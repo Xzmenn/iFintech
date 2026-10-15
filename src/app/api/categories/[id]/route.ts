@@ -13,7 +13,13 @@ export const GET = withApi<Context>(async (_request, { params }) => {
 
 export const PATCH = withApi<Context>(async (request, { params }) => {
   const user = await requireUser();
-  return NextResponse.json(await updateCategory(user.id, (await params).id, categoryUpdateSchema.parse(await request.json())));
+  return NextResponse.json(
+    await updateCategory(
+      user.id,
+      (await params).id,
+      categoryUpdateSchema.parse(await request.json()),
+    ),
+  );
 });
 
 export const DELETE = withApi<Context>(async (_request, { params }) => {

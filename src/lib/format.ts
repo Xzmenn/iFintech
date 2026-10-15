@@ -14,10 +14,7 @@ export function formatCurrency(
   }).format(value);
 }
 
-export function formatDate(
-  date: Date | string,
-  pattern = "d MMMM yyyy",
-) {
+export function formatDate(date: Date | string, pattern = "d MMMM yyyy") {
   return dateFormat(typeof date === "string" ? new Date(date) : date, pattern, {
     locale: id,
   });

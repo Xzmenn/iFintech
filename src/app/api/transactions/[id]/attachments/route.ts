@@ -15,7 +15,9 @@ export const POST = withApi<Context>(async (request: NextRequest, { params }) =>
     throw new AppError(400, "Lampiran hanya boleh berupa gambar atau PDF");
   }
   const result = await createAttachment(user.id, (await params).id, {
-    buffer: Buffer.from(await file.arrayBuffer()), name: file.name, type: file.type,
+    buffer: Buffer.from(await file.arrayBuffer()),
+    name: file.name,
+    type: file.type,
   });
   return NextResponse.json(result, { status: 201 });
 });

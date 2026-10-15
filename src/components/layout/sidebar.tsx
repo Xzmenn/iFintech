@@ -9,14 +9,14 @@ import { navigationItems } from "@/components/layout/navigation";
 export function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-card lg:flex">
+    <aside className="bg-card fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r lg:flex">
       <Link href="/dashboard" className="flex h-20 items-center gap-3 px-7">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+        <span className="bg-primary text-primary-foreground flex size-10 items-center justify-center rounded-xl">
           <WalletCards className="size-5" />
         </span>
         <span className="text-xl font-bold tracking-tight">iFintech</span>
       </Link>
-      <p className="px-7 pb-3 pt-5 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+      <p className="text-muted-foreground px-7 pt-5 pb-3 text-[11px] font-semibold tracking-[0.15em] uppercase">
         Menu utama
       </p>
       <nav className="flex-1 space-y-1 px-3">
@@ -39,9 +39,9 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="m-4 rounded-2xl border bg-muted/40 p-4">
+      <div className="bg-muted/40 m-4 rounded-2xl border p-4">
         <p className="text-sm font-semibold">Kelola dengan bijak</p>
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-xs leading-relaxed">
           Pantau arus uang dan capai target finansial Anda.
         </p>
       </div>

@@ -27,13 +27,19 @@ export function StatCard({
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <p className="mt-3 text-xl font-bold tracking-tight sm:text-2xl"><Money amount={amount} /></p>
+            <p className="text-muted-foreground text-sm">{title}</p>
+            <p className="mt-3 text-xl font-bold tracking-tight sm:text-2xl">
+              <Money amount={amount} />
+            </p>
           </div>
-          <span className={`flex size-10 items-center justify-center rounded-xl ${toneClass}`}><Icon className="size-5" /></span>
+          <span className={`flex size-10 items-center justify-center rounded-xl ${toneClass}`}>
+            <Icon className="size-5" />
+          </span>
         </div>
         {change !== undefined && (
-          <p className={`mt-4 flex items-center gap-1 text-xs ${change >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+          <p
+            className={`mt-4 flex items-center gap-1 text-xs ${change >= 0 ? "text-emerald-600" : "text-rose-600"}`}
+          >
             <ChangeIcon className="size-3.5" /> {Math.abs(change).toFixed(1)}% dibanding bulan lalu
           </p>
         )}

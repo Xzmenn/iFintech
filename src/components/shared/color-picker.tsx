@@ -14,7 +14,13 @@ export function ColorPicker({
   return (
     <label className="flex w-fit items-center gap-3 text-sm">
       <span>{label}</span>
-      <Input aria-label={label} type="color" className="h-9 w-12 cursor-pointer p-1" value={value} onChange={(event) => onChange(event.target.value)} />
+      <Input
+        aria-label={label}
+        type="color"
+        className="h-9 w-12 cursor-pointer p-1"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </label>
   );
 }

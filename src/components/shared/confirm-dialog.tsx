@@ -47,7 +47,13 @@ export function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Batal</AlertDialogCancel>
-          <AlertDialogAction onClick={(event) => { event.preventDefault(); void confirm(); }} disabled={loading}>
+          <AlertDialogAction
+            onClick={(event) => {
+              event.preventDefault();
+              void confirm();
+            }}
+            disabled={loading}
+          >
             {loading ? "Memproses…" : confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
